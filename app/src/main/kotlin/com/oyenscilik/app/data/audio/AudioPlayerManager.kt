@@ -38,7 +38,7 @@ class AudioPlayerManager @Inject constructor(
     companion object {
         private const val TAG = "AudioPlayerManager"
         // Base URL for audio files - should match backend uploads
-        const val AUDIO_BASE_URL = "http://10.0.2.2:3000/uploads/audio/"
+        const val AUDIO_BASE_URL = "https://oyens-cilik-api.vercel.app/uploads/audio/"
     }
     
     init {

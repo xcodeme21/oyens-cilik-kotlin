@@ -23,7 +23,7 @@ android {
         }
 
         // API Base URL
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000/api/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://oyens-cilik-api.vercel.app/api/\"")
     }
 
     buildTypes {
@@ -34,11 +34,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://api.oyenscilik.com/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://oyens-cilik-api.vercel.app/api/\"")
         }
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:3000/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://oyens-cilik-api.vercel.app/api/\"")
         }
     }
 
