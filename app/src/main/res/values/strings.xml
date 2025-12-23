@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Oyens Cilik</string>
+    <string name="app_tagline">Belajar Seru untuk Si Kecil</string>
+    
+    <!-- Authentication -->
+    <string name="welcome_title">Halo! Selamat datang di Oyens Cilik!</string>
+    <string name="welcome_subtitle">Aplikasi belajar dengan eksperimen bermain untuk usia 2-6 tahun yang dilengkapi dengan karakter kucing favorit dan permainan menarik.</string>
+    <string name="btn_register">Daftar Sekarang</string>
+    <string name="btn_login">Masuk</string>
+    <string name="already_have_account">Sudah punya akun?</string>
+    <string name="dont_have_account">Belum punya akun?</string>
+    <string name="or">atau</string>
+    <string name="login_with_google">Masuk dengan Google</string>
+    <string name="register_with_google">Daftar dengan Google</string>
+    
+    <!-- Form Labels -->
+    <string name="label_name">Nama Kamu (Orang Tua)</string>
+    <string name="label_email">Email</string>
+    <string name="label_phone">Nomor Telepon</string>
+    <string name="label_password">Kata sandi</string>
+    <string name="hint_name">Contoh: Andika Jayadi</string>
+    <string name="hint_email">Contoh: email@example.com</string>
+    <string name="hint_phone">8123567890</string>
+    <string name="hint_password">Masukkan kata sandi</string>
+    <string name="btn_next">Selanjutnya</string>
+    <string name="btn_back">Kembali</string>
+    <string name="terms_agreement">Dengan mendaftar, Kamu menyetujui Syarat &amp; Ketentuan dan Kebijakan Privasi kami</string>
+    
+    <!-- Child Profile -->
+    <string name="add_child">Tambah Anak</string>
+    <string name="child_name">Nama Anak</string>
+    <string name="child_nickname">Nama Panggilan</string>
+    <string name="child_age">Tanggal Lahir</string>
+    <string name="child_gender">Jenis Kelamin</string>
+    <string name="male">Laki-laki</string>
+    <string name="female">Perempuan</string>
+    
+    <!-- Home -->
+    <string name="greeting">Halo, %1$s! 👋</string>
+    <string name="ready_to_learn">Siap belajar hari ini?</string>
+    <string name="learn_letters">Belajar Huruf</string>
+    <string name="learn_numbers">Belajar Angka</string>
+    <string name="guess_animal">Tebak Hewan</string>
+    
+    <!-- Learning -->
+    <string name="letters">Huruf</string>
+    <string name="numbers">Angka</string>
+    <string name="animals">Hewan</string>
+    <string name="play_sound">Dengar Suara</string>
+    <string name="next">Lanjut</string>
+    <string name="previous">Sebelumnya</string>
+    <string name="correct">Benar! 🎉</string>
+    <string name="wrong">Coba lagi ya! 💪</string>
+    <string name="level">Level %1$d</string>
+    <string name="stars">⭐ %1$d</string>
+    <string name="streak">🔥 %1$d hari berturut-turut</string>
+    
+    <!-- Quiz -->
+    <string name="quiz_instruction">Tebak huruf yang hilang!</string>
+    <string name="quiz_complete">Keren! Kamu berhasil! 🎊</string>
+</resources>
