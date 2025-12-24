@@ -10,6 +10,13 @@ import com.oyenscilik.presentation.screens.home.HomeScreen
 import com.oyenscilik.presentation.screens.letters.LetterDetailScreen
 import com.oyenscilik.presentation.screens.letters.LettersScreen
 import com.oyenscilik.presentation.screens.splash.SplashScreen
+import com.oyenscilik.presentation.screens.numbers.NumbersScreen
+import com.oyenscilik.presentation.screens.numbers.NumberDetailScreen
+import com.oyenscilik.presentation.screens.animals.AnimalsScreen
+import com.oyenscilik.presentation.screens.animals.AnimalDetailScreen
+import com.oyenscilik.presentation.screens.profile.ProfileScreen
+import com.oyenscilik.presentation.screens.profile.MonthlyStreakScreen
+import com.oyenscilik.presentation.screens.leaderboard.LeaderboardScreen
 
 @Composable
 fun NavGraph(
@@ -34,7 +41,8 @@ fun NavGraph(
             HomeScreen(
                 onNavigateToLetters = { navController.navigate(Screen.Letters.route) },
                 onNavigateToNumbers = { navController.navigate(Screen.Numbers.route) },
-                onNavigateToAnimals = { navController.navigate(Screen.Animals.route) }
+                onNavigateToAnimals = { navController.navigate(Screen.Animals.route) },
+                onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
             )
         }
 
@@ -54,19 +62,90 @@ fun NavGraph(
                     type = NavType.StringType
                 }
             )
-        ) {
+        ) { backStackEntry ->
+            val letterId = backStackEntry.arguments?.getString("letterId")?.toIntOrNull() ?: 1
             LetterDetailScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigatePrev = {
+                    val prevId = letterId - 1
+                    if (prevId >= 1) {
+                        navController.navigate(Screen.LetterDetail.createRoute(prevId)) {
+                            popUpTo(Screen.LetterDetail.route) { inclusive = true }
+                        }
+                    }
+                },
+                onNavigateNext = {
+                    val nextId = letterId + 1
+                    if (nextId <= 26) {
+                        navController.navigate(Screen.LetterDetail.createRoute(nextId)) {
+                            popUpTo(Screen.LetterDetail.route) { inclusive = true }
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(Screen.Numbers.route) {
+            NumbersScreen(
+                onNavigateToNumber = { id ->
+                    navController.navigate(Screen.NumberDetail.createRoute(id))
+                },
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
-        // Placeholder screens for Numbers and Animals
-        composable(Screen.Numbers.route) {
-            // TODO: NumbersScreen
+        composable(
+            route = Screen.NumberDetail.route,
+            arguments = listOf(
+                navArgument("numberId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val numberId = backStackEntry.arguments?.getInt("numberId") ?: 0
+            NumberDetailScreen(
+                numberId = numberId,
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
 
         composable(Screen.Animals.route) {
-            // TODO: AnimalsScreen
+            AnimalsScreen(
+                onNavigateToAnimal = { id ->
+                    navController.navigate(Screen.AnimalDetail.createRoute(id))
+                },
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.AnimalDetail.route,
+            arguments = listOf(
+                navArgument("animalId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val animalId = backStackEntry.arguments?.getInt("animalId") ?: 1
+            AnimalDetailScreen(
+                animalId = animalId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToStreak = { navController.navigate(Screen.MonthlyStreak.route) }
+            )
+        }
+
+        composable(Screen.MonthlyStreak.route) {
+            MonthlyStreakScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Leaderboard.route) {
+            LeaderboardScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }

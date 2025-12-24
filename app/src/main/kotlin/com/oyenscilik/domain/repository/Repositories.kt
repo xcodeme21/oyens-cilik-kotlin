@@ -26,6 +26,10 @@ interface ProfileRepository {
         endDate: String
     ): Result<List<ActivityHistory>>
     suspend fun getLevelInfo(childId: String): Result<LevelInfo>
+suspend fun getMonthlyStreak(childId: String, month: String? = null): Result<MonthlyStreak>
+
+suspend fun getStreakCalendar(childId: String, month: String? = null): Result<StreakCalendar>
+
 }
 
 interface ProgressRepository {

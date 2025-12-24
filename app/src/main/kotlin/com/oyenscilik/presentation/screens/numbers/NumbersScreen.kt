@@ -1,4 +1,4 @@
-package com.oyenscilik.presentation.screens.letters
+package com.oyenscilik.presentation.screens.numbers
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,20 +23,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.oyenscilik.domain.model.Letter
 
 private val Cream = Color(0xFFFFFBF5)
 private val Peach = Color(0xFFFFE5D9)
 private val TextDark = Color(0xFF2D3436)
 
 @Composable
-fun LettersScreen(
-    onNavigateToLetter: (Int) -> Unit,
-    onNavigateBack: () -> Unit,
-    viewModel: LettersViewModel = hiltViewModel()
+fun NumbersScreen(
+    onNavigateToNumber: (Int) -> Unit,
+    onNavigateBack: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val numbers = (0..20).toList()
 
     Box(
         modifier = Modifier
@@ -47,10 +43,10 @@ fun LettersScreen(
         // Decorative bg
         Box(
             modifier = Modifier
-                .size(200.dp)
-                .offset(x = 200.dp, y = 100.dp)
+                .size(220.dp)
+                .offset(x = (-50).dp, y = 200.dp)
                 .background(
-                    brush = Brush.radialGradient(listOf(Color(0xFFFF8C42).copy(0.1f), Color.Transparent)),
+                    brush = Brush.radialGradient(listOf(Color(0xFF667EEA).copy(0.1f), Color.Transparent)),
                     shape = CircleShape
                 )
         )
@@ -76,43 +72,29 @@ fun LettersScreen(
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Belajar Huruf",
+                        text = "Belajar Angka",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextDark
                     )
-                    Text("A sampai Z", fontSize = 13.sp, color = Color(0xFF636E72))
+                    Text("0 sampai 20", fontSize = 13.sp, color = Color(0xFF636E72))
                 }
 
-                Text("🔤", fontSize = 32.sp)
+                Text("🔢", fontSize = 32.sp)
             }
 
-            when {
-                uiState.isLoading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Color(0xFFFF8C42))
-                    }
-                }
-                uiState.error != null -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("${uiState.error}", color = Color(0xFFFF6B6B), fontSize = 16.sp)
-                    }
-                }
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(4),
-                        contentPadding = PaddingValues(20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        itemsIndexed(uiState.letters) { index, letter ->
-                            PremiumLetterCard(
-                                letter = letter,
-                                index = index,
-                                onClick = { onNavigateToLetter(letter.id) }
-                            )
-                        }
-                    }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                contentPadding = PaddingValues(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                itemsIndexed(numbers) { index, number ->
+                    PremiumNumberCard(
+                        number = number,
+                        index = index,
+                        onClick = { onNavigateToNumber(number) }
+                    )
                 }
             }
         }
@@ -120,8 +102,8 @@ fun LettersScreen(
 }
 
 @Composable
-fun PremiumLetterCard(
-    letter: Letter,
+fun PremiumNumberCard(
+    number: Int,
     index: Int,
     onClick: () -> Unit
 ) {
@@ -135,16 +117,16 @@ fun PremiumLetterCard(
     )
 
     val gradients = listOf(
-        listOf(Color(0xFFFF8C42), Color(0xFFFF6B35)),
         listOf(Color(0xFF667EEA), Color(0xFF764BA2)),
-        listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
-        listOf(Color(0xFFFF6B6B), Color(0xFFFF8E53)),
         listOf(Color(0xFF4FACFE), Color(0xFF00F2FE)),
-        listOf(Color(0xFFA770EF), Color(0xFFCF8BF3))
+        listOf(Color(0xFFFF6B6B), Color(0xFFFF8E53)),
+        listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
+        listOf(Color(0xFFA770EF), Color(0xFFCF8BF3)),
+        listOf(Color(0xFFFF8C42), Color(0xFFFF6B35))
     )
 
     LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay((index * 25).toLong())
+        kotlinx.coroutines.delay((index * 30).toLong())
         isVisible = true
     }
 
@@ -175,10 +157,7 @@ fun PremiumLetterCard(
                 },
             contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(letter.letter, fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(letter.lowercase, fontSize = 14.sp, color = Color.White.copy(0.8f))
-            }
+            Text("$number", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
 }

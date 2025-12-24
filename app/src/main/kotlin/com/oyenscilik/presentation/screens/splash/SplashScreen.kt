@@ -1,6 +1,7 @@
 package com.oyenscilik.presentation.screens.splash
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -9,55 +10,53 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.oyenscilik.presentation.theme.*
 import kotlinx.coroutines.delay
+
+// Premium 2025 Color Palette - Soft & Warm
+val PremiumCream = Color(0xFFFFFBF5)
+val PremiumPeach = Color(0xFFFFE5D9)
+val PremiumOrange = Color(0xFFFF8C42)
+val PremiumCoral = Color(0xFFFF6B6B)
+val PremiumLavender = Color(0xFFE8E0FF)
+val PremiumMint = Color(0xFFD0F0E4)
+val PremiumSky = Color(0xFFE3F2FD)
+val PremiumText = Color(0xFF2D3436)
+val PremiumSubtext = Color(0xFF636E72)
 
 @Composable
 fun SplashScreen(
     onNavigateToHome: () -> Unit
 ) {
-    // Bouncing animation for mascot
     val infiniteTransition = rememberInfiniteTransition(label = "splash")
     
-    val bounce by infiniteTransition.animateFloat(
+    // Gentle floating
+    val float by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = -20f,
+        targetValue = 12f,
         animationSpec = infiniteRepeatable(
-            animation = tween(600, easing = FastOutSlowInEasing),
+            animation = tween(1800, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
-        label = "bounce"
+        label = "float"
     )
 
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = -5f,
-        targetValue = 5f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "rotation"
-    )
-
-    // Scale in animation
+    // Scale entrance
     var isVisible by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
-        targetValue = if (isVisible) 1f else 0.3f,
+        targetValue = if (isVisible) 1f else 0.5f,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
+            dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessLow
         ),
-        label = "scale_in"
+        label = "scale"
     )
 
     LaunchedEffect(Unit) {
@@ -72,14 +71,38 @@ fun SplashScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFFFF9F0),
-                        Color(0xFFFFE8D6),
-                        Color(0xFFFFF0E5)
+                        PremiumCream,
+                        Color(0xFFFFF8F0),
+                        PremiumPeach.copy(0.3f)
                     )
                 )
             ),
         contentAlignment = Alignment.Center
     ) {
+        // Decorative circles
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .offset(x = (-100).dp, y = (-200).dp)
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(PremiumOrange.copy(0.15f), Color.Transparent)
+                    ),
+                    shape = CircleShape
+                )
+        )
+        Box(
+            modifier = Modifier
+                .size(250.dp)
+                .offset(x = 120.dp, y = 250.dp)
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(PremiumLavender.copy(0.4f), Color.Transparent)
+                    ),
+                    shape = CircleShape
+                )
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.graphicsLayer {
@@ -87,109 +110,68 @@ fun SplashScreen(
                 scaleY = scale
             }
         ) {
-            // Mascot with bounce animation
+            // Mascot
             Box(
                 modifier = Modifier
-                    .size(140.dp)
-                    .offset(y = bounce.dp)
-                    .graphicsLayer {
-                        rotationZ = rotation
-                    }
-                    .shadow(16.dp, CircleShape)
+                    .size(160.dp)
+                    .offset(y = (-float).dp)
+                    .shadow(
+                        elevation = 30.dp,
+                        shape = CircleShape,
+                        ambientColor = PremiumOrange.copy(0.3f),
+                        spotColor = PremiumOrange.copy(0.2f)
+                    )
                     .background(
-                        brush = Brush.radialGradient(
+                        brush = Brush.linearGradient(
                             colors = listOf(
-                                KidOrange.copy(alpha = 0.9f),
-                                KidOrangeDark
+                                Color(0xFFFFAA5C),
+                                PremiumOrange
                             )
                         ),
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                // Cute cat emoji as placeholder
-                Text(
-                    text = "🐱",
-                    fontSize = 80.sp
-                )
+                Text("🐱", fontSize = 90.sp)
             }
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // App name
+            Text(
+                text = "Oyens Cilik",
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                color = PremiumText
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Belajar Sambil Bermain",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = PremiumSubtext
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // App name with styled text
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(
-                        SpanStyle(
-                            color = KidOrange,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 42.sp
-                        )
-                    ) {
-                        append("Oyens")
-                    }
-                    append(" ")
-                    withStyle(
-                        SpanStyle(
-                            color = TextPrimary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 42.sp
-                        )
-                    ) {
-                        append("Cilik")
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Tagline
-            Box(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(KidOrange.copy(0.2f), KidPink.copy(0.2f))
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .padding(horizontal = 20.dp, vertical = 8.dp)
-            ) {
-                Text(
-                    text = "✨ Belajar Sambil Bermain ✨",
-                    fontSize = 14.sp,
-                    color = TextPrimary,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-
-        // Loading indicator at bottom
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 60.dp)
-        ) {
-            val dots by infiniteTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 3f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(900, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart
-                ),
-                label = "loading_dots"
-            )
-            
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            // Loading dots
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 repeat(3) { index ->
+                    val dotAlpha by infiniteTransition.animateFloat(
+                        initialValue = 0.3f,
+                        targetValue = 1f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(600, delayMillis = index * 200),
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                        label = "dot$index"
+                    )
                     Box(
                         modifier = Modifier
-                            .size(12.dp)
-                            .background(
-                                color = if (dots.toInt() == index) KidOrange else KidOrange.copy(0.3f),
-                                shape = CircleShape
-                            )
+                            .size(10.dp)
+                            .background(PremiumOrange.copy(dotAlpha), CircleShape)
                     )
                 }
             }

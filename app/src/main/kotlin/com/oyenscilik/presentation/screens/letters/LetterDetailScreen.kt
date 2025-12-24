@@ -2,13 +2,13 @@ package com.oyenscilik.presentation.screens.letters
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,202 +23,254 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.oyenscilik.domain.model.Letter
-import com.oyenscilik.presentation.components.KidButton
-import com.oyenscilik.presentation.components.kidBackgroundPattern
-import com.oyenscilik.presentation.theme.*
+
+private val Cream = Color(0xFFFFFBF5)
+private val Peach = Color(0xFFFFE5D9)
+private val TextDark = Color(0xFF2D3436)
+private val AccentOrange = Color(0xFFFF8C42)
 
 @Composable
 fun LetterDetailScreen(
     onNavigateBack: () -> Unit,
+    onNavigatePrev: (() -> Unit)? = null,
+    onNavigateNext: (() -> Unit)? = null,
     viewModel: LetterDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .kidBackgroundPattern()
-    ) {
-        // Top bar with back button
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp)
-        ) {
-            KidButton(
-                text = "🔙",
-                onClick = onNavigateBack,
-                mainColor = KidPink,
-                modifier = Modifier.size(56.dp)
-            )
-        }
-
-        when {
-            uiState.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = KidOrange)
-                }
-            }
-            uiState.error != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Ups! ${uiState.error}",
-                        color = KidRed,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
-            }
-            uiState.letter != null -> {
-                LetterDetailContent(
-                    letter = uiState.letter!!,
-                    isPlaying = uiState.isPlaying,
-                    onPlayAudio = { viewModel.toggleAudio() }
-                )
-            }
-        }
+    val letters = ('A'..'Z').toList()
+    
+    var currentLetterId by remember { mutableStateOf(uiState.letter?.id ?: 1) }
+    
+    LaunchedEffect(uiState.letter) {
+        uiState.letter?.let { currentLetterId = it.id }
     }
-}
+    
+    val hasPrev = currentLetterId > 1
+    val hasNext = currentLetterId < 26
 
-@Composable
-fun LetterDetailContent(
-    letter: Letter,
-    isPlaying: Boolean,
-    onPlayAudio: () -> Unit
-) {
-    val infiniteTransition = rememberInfiniteTransition(label = "bounce")
+    val infiniteTransition = rememberInfiniteTransition(label = "letter")
     val bounce by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = -15f,
+        targetValue = 12f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = FastOutSlowInEasing),
+            animation = tween(1200, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "bounce"
     )
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(brush = Brush.verticalGradient(listOf(Cream, Color(0xFFFFF8F0), Peach.copy(0.2f))))
     ) {
-        // Large animated letter card
+        // Decorative circle
         Box(
             modifier = Modifier
-                .size(280.dp)
-                .graphicsLayer { translationY = bounce }
-                .shadow(16.dp, RoundedCornerShape(32.dp))
+                .size(250.dp)
+                .offset(x = 150.dp, y = 200.dp)
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(KidOrange, KidYellow)
-                    ),
-                    shape = RoundedCornerShape(32.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = letter.letter,
-                    fontSize = 120.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White
+                    brush = Brush.radialGradient(listOf(AccentOrange.copy(0.12f), Color.Transparent)),
+                    shape = CircleShape
                 )
-                Text(
-                    text = letter.lowercase,
-                    fontSize = 80.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White.copy(alpha = 0.8f)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Audio button
-        KidButton(
-            text = if (isPlaying) "🔊 Playing..." else "🔊 Dengarkan",
-            onClick = onPlayAudio,
-            mainColor = KidPurple,
-            modifier = Modifier.fillMaxWidth(0.7f)
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Example word section
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp, RoundedCornerShape(24.dp))
-                .background(Color.White, RoundedCornerShape(24.dp))
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Contoh Kata",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = KidPurple,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Example word image placeholder
                 Box(
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(48.dp)
+                        .shadow(8.dp, CircleShape)
                         .clip(CircleShape)
-                        .background(KidOrange.copy(alpha = 0.2f)),
+                        .background(Color.White)
+                        .clickable { onNavigateBack() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "📷",
-                        fontSize = 48.sp
-                    )
+                    Text("←", fontSize = 22.sp, color = TextDark)
                 }
-                
-                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
-                    text = letter.exampleWord,
-                    fontSize = 32.sp,
-                    color = TextPrimary,
-                    fontWeight = FontWeight.Bold
+                    text = "Belajar Huruf",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextDark
                 )
+
+                Text("🔤", fontSize = 28.sp)
             }
-        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            when {
+                uiState.isLoading -> {
+                    Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = AccentOrange)
+                    }
+                }
+                uiState.error != null -> {
+                    Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
+                        Text("${uiState.error}", color = Color(0xFFFF6B6B), fontSize = 16.sp)
+                    }
+                }
+                uiState.letter != null -> {
+                    val letter = uiState.letter!!
 
-        // Encouragement message
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(8.dp, RoundedCornerShape(24.dp))
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(KidGreen, KidBlue)
-                    ),
-                    shape = RoundedCornerShape(24.dp)
-                )
-                .padding(20.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "🎉 Kamu Hebat! Terus Belajar Ya! 🌟",
-                fontSize = 18.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    // Main content with navigation arrows
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Left arrow
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .shadow(if (hasPrev) 12.dp else 0.dp, CircleShape)
+                                .clip(CircleShape)
+                                .background(if (hasPrev) Color.White else Color.Transparent)
+                                .clickable(enabled = hasPrev) {
+                                    if (hasPrev) {
+                                        onNavigatePrev?.invoke()
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "◀",
+                                fontSize = 24.sp,
+                                color = if (hasPrev) AccentOrange else Color.Gray.copy(0.3f)
+                            )
+                        }
+
+                        // Main letter card
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 16.dp)
+                                .offset(y = (-bounce).dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(180.dp)
+                                    .shadow(24.dp, CircleShape, ambientColor = AccentOrange.copy(0.2f))
+                                    .clip(CircleShape)
+                                    .background(
+                                        brush = Brush.linearGradient(listOf(AccentOrange, Color(0xFFFF6B35)))
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        text = letter.letter,
+                                        fontSize = 72.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = letter.lowercase,
+                                        fontSize = 40.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.White.copy(0.8f)
+                                    )
+                                }
+                            }
+                        }
+
+                        // Right arrow
+                        Box(
+                            modifier = Modifier
+                                .size(56.dp)
+                                .shadow(if (hasNext) 12.dp else 0.dp, CircleShape)
+                                .clip(CircleShape)
+                                .background(if (hasNext) Color.White else Color.Transparent)
+                                .clickable(enabled = hasNext) {
+                                    if (hasNext) {
+                                        onNavigateNext?.invoke()
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "▶",
+                                fontSize = 24.sp,
+                                color = if (hasNext) AccentOrange else Color.Gray.copy(0.3f)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    // Audio button
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .shadow(12.dp, RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(
+                                brush = Brush.horizontalGradient(listOf(Color(0xFF667EEA), Color(0xFF764BA2)))
+                            )
+                            .clickable { viewModel.toggleAudio() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (uiState.isPlaying) "🔊 Playing..." else "🔊 Dengarkan",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Example word
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(16.dp, RoundedCornerShape(24.dp))
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(Color.White)
+                            .padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("Contoh Kata", fontSize = 14.sp, color = Color(0xFF636E72))
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = letter.exampleWord,
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TextDark
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Position indicator
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "${currentLetterId} / 26",
+                            fontSize = 14.sp,
+                            color = Color(0xFF636E72)
+                        )
+                    }
+                }
+            }
         }
     }
 }

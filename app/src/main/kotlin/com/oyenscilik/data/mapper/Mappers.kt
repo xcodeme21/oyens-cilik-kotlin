@@ -148,3 +148,44 @@ private fun getLevelTitle(level: Int): String {
         else -> "Pemula"
     }
 }
+
+// Monthly Streak Mappers
+fun MonthlyStreakDto.toDomain() =
+        MonthlyStreak(
+                childId = childId,
+                month = month,
+                currentStreak = currentStreak,
+                longestStreakThisMonth = longestStreakThisMonth,
+                totalActiveDays = totalActiveDays,
+                targetDays = targetDays,
+                completedDates = completedDates,
+                status =
+                        when (status.lowercase()) {
+                            "active" -> StreakStatus.ACTIVE
+                            "broken" -> StreakStatus.BROKEN
+                            else -> StreakStatus.NEW
+                        },
+                achievementPercentage = achievementPercentage,
+                isTargetMet = isTargetMet,
+                reward = reward
+        )
+
+fun StreakCalendarDto.toDomain() =
+        StreakCalendar(
+                month = month,
+                calendar =
+                        calendar.mapValues { (_, dayData) ->
+                            DayData(
+                                    isActive = dayData.isActive,
+                                    lessonCount = dayData.lessonCount,
+                                    stars = dayData.stars
+                            )
+                        },
+                stats =
+                        CalendarStats(
+                                totalDays = stats.totalDays,
+                                activeDays = stats.activeDays,
+                                totalLessons = stats.totalLessons,
+                                totalStars = stats.totalStars
+                        )
+        )

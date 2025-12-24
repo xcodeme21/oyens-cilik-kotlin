@@ -74,4 +74,17 @@ interface ApiService {
     // Leaderboard endpoint
     @GET("progress/leaderboard")
     suspend fun getLeaderboard(@Query("limit") limit: Int): Response<ApiResponse<List<LeaderboardEntryDto>>>
+// Monthly Streak endpoints
+@GET("profile/{childId}/streak/monthly")
+suspend fun getMonthlyStreak(
+        @Path("childId") childId: String,
+        @Query("month") month: String? = null
+): Response<ApiResponse<MonthlyStreakDto>>
+
+@GET("profile/{childId}/streak/calendar")
+suspend fun getStreakCalendar(
+        @Path("childId") childId: String,
+        @Query("month") month: String? = null
+): Response<ApiResponse<StreakCalendarDto>>
+
 }

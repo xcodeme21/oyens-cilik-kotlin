@@ -8,6 +8,18 @@ sealed class Screen(val route: String) {
         fun createRoute(letterId: Int) = "letter/$letterId"
     }
     object Numbers : Screen("numbers")
+object NumberDetail : Screen("number/{numberId}") {
+    fun createRoute(numberId: Int) = "number/$numberId"
+}
+
     object Animals : Screen("animals")
+object AnimalDetail : Screen("animal/{animalId}") {
+    fun createRoute(animalId: Int) = "animal/$animalId"
+}
+
     object Profile : Screen("profile")
+object MonthlyStreak : Screen("streak")
+
+object Leaderboard : Screen("leaderboard")
+
 }
