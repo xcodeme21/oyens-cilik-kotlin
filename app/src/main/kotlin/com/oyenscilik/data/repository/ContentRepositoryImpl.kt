@@ -58,4 +58,30 @@ class ContentRepositoryImpl @Inject constructor(
     } catch (e: Exception) {
         Result.Error(e.message ?: "Unknown error")
     }
+
+    override suspend fun getNumber(id: Int): Result<NumberContent> = try {
+        val response = api.getNumber(id)
+        if (response.isSuccessful && response.body()?.success == true) {
+            response.body()!!.data?.let {
+                Result.Success(it.toDomain())
+            } ?: Result.Error("Number not found")
+        } else {
+            Result.Error("Failed to fetch number")
+        }
+    } catch (e: Exception) {
+        Result.Error(e.message ?: "Unknown error")
+    }
+
+    override suspend fun getAnimal(id: Int): Result<Animal> = try {
+        val response = api.getAnimal(id)
+        if (response.isSuccessful && response.body()?.success == true) {
+            response.body()!!.data?.let {
+                Result.Success(it.toDomain())
+            } ?: Result.Error("Animal not found")
+        } else {
+            Result.Error("Failed to fetch animal")
+        }
+    } catch (e: Exception) {
+        Result.Error(e.message ?: "Unknown error")
+    }
 }

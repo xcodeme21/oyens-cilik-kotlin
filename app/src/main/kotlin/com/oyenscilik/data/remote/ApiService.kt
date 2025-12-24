@@ -15,8 +15,14 @@ interface ApiService {
     @GET("content/numbers")
     suspend fun getNumbers(): Response<ApiResponse<List<NumberDto>>>
 
+    @GET("content/numbers/{id}")
+    suspend fun getNumber(@Path("id") id: Int): Response<ApiResponse<NumberDto>>
+
     @GET("content/animals")
     suspend fun getAnimals(): Response<ApiResponse<List<AnimalDto>>>
+
+    @GET("content/animals/{id}")
+    suspend fun getAnimal(@Path("id") id: Int): Response<ApiResponse<AnimalDto>>
     
     // Auth endpoints
     @POST("auth/register")
