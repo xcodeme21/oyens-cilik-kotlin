@@ -35,7 +35,7 @@ data class NumberDto(
 data class AnimalDto(
     val id: Int,
     val name: String,
-    val name_en: String,
+    val nameEn: String,
     val description: String,
     val funFact: String,
     val imageUrl: String?,

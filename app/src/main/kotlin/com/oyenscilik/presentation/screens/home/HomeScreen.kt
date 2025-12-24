@@ -33,8 +33,7 @@ private val TextGray = Color(0xFF636E72)
 fun HomeScreen(
     onNavigateToLetters: () -> Unit,
     onNavigateToNumbers: () -> Unit,
-    onNavigateToAnimals: () -> Unit,
-    onNavigateToProfile: () -> Unit = {}
+    onNavigateToAnimals: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -97,20 +96,9 @@ fun HomeScreen(
                     )
                 }
 
-                // Profile
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .shadow(16.dp, CircleShape, ambientColor = Color(0xFFFF8C42).copy(0.3f))
-                        .background(
-                            brush = Brush.linearGradient(listOf(Color(0xFFFFAA5C), Color(0xFFFF8C42))),
-                            shape = CircleShape
-                        )
-                        .clickable { onNavigateToProfile() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("🐱", fontSize = 32.sp)
-                }
+
+Text("🐱", fontSize = 32.sp)
+
             }
 
             Spacer(modifier = Modifier.height(36.dp))

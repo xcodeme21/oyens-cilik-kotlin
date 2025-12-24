@@ -75,17 +75,8 @@ fun LeaderboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .shadow(8.dp, CircleShape)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                        .clickable { onNavigateBack() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("←", fontSize = 22.sp, color = TextDark)
-                }
+                // Empty box for spacing or remove completely
+                Box(modifier = Modifier.size(48.dp))
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Peringkat", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextDark)

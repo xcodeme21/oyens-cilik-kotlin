@@ -1,6 +1,8 @@
 package com.oyenscilik.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,8 +23,12 @@ import com.oyenscilik.presentation.screens.leaderboard.LeaderboardScreen
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: String = Screen.Splash.route
+    startDestination: String = Screen.Splash.route,
+    viewModel: com.oyenscilik.presentation.MainViewModel
 ) {
+    val isGuestLimitReached by viewModel.isGuestLimitReached.collectAsState()
+    val isGuestMode by viewModel.isGuestMode.collectAsState()
+
     NavHost(
         navController = navController,
         startDestination = startDestination
@@ -37,12 +43,60 @@ fun NavGraph(
             )
         }
 
+        composable(Screen.Login.route) {
+            com.oyenscilik.presentation.screens.auth.LoginScreen(
+                onLoginSuccess = {
+                    viewModel.onLoginSuccess()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToRegister = {
+                    navController.navigate(Screen.Register.route)
+                }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            com.oyenscilik.presentation.screens.auth.RegisterScreen(
+                onRegisterSuccess = {
+                    viewModel.onLoginSuccess()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Register.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToLetters = { navController.navigate(Screen.Letters.route) },
-                onNavigateToNumbers = { navController.navigate(Screen.Numbers.route) },
-                onNavigateToAnimals = { navController.navigate(Screen.Animals.route) },
-                onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                onNavigateToLetters = {
+                    if (isGuestMode && isGuestLimitReached) {
+                         navController.navigate(Screen.Login.route)
+                    } else {
+                         viewModel.onLessonCompleted() // Increment count on start for simplicity
+                         navController.navigate(Screen.Letters.route)
+                    }
+                },
+                onNavigateToNumbers = {
+                    if (isGuestMode && isGuestLimitReached) {
+                         navController.navigate(Screen.Login.route)
+                    } else {
+                         viewModel.onLessonCompleted()
+                         navController.navigate(Screen.Numbers.route)
+                    }
+                },
+                onNavigateToAnimals = {
+                    if (isGuestMode && isGuestLimitReached) {
+                         navController.navigate(Screen.Login.route)
+                    } else {
+                         viewModel.onLessonCompleted()
+                         navController.navigate(Screen.Animals.route)
+                    }
+                }
             )
         }
 
