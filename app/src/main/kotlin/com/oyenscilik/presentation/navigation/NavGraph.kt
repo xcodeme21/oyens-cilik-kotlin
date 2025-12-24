@@ -151,13 +151,28 @@ fun NavGraph(
         composable(
             route = Screen.NumberDetail.route,
             arguments = listOf(
-                navArgument("numberId") { type = NavType.IntType }
+                navArgument("numberId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val numberId = backStackEntry.arguments?.getInt("numberId") ?: 0
+            val numberId = backStackEntry.arguments?.getString("numberId")?.toIntOrNull() ?: 0
             NumberDetailScreen(
-                numberId = numberId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigatePrev = {
+                    val prevId = numberId - 1
+                    if (prevId >= 0) {
+                        navController.navigate(Screen.NumberDetail.createRoute(prevId)) {
+                            popUpTo(Screen.NumberDetail.route) { inclusive = true }
+                        }
+                    }
+                },
+                onNavigateNext = {
+                    val nextId = numberId + 1
+                    if (nextId <= 20) {
+                        navController.navigate(Screen.NumberDetail.createRoute(nextId)) {
+                            popUpTo(Screen.NumberDetail.route) { inclusive = true }
+                        }
+                    }
+                }
             )
         }
 
@@ -173,13 +188,28 @@ fun NavGraph(
         composable(
             route = Screen.AnimalDetail.route,
             arguments = listOf(
-                navArgument("animalId") { type = NavType.IntType }
+                navArgument("animalId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val animalId = backStackEntry.arguments?.getInt("animalId") ?: 1
+            val animalId = backStackEntry.arguments?.getString("animalId")?.toIntOrNull() ?: 1
             AnimalDetailScreen(
-                animalId = animalId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigatePrev = {
+                    val prevId = animalId - 1
+                    if (prevId >= 1) {
+                        navController.navigate(Screen.AnimalDetail.createRoute(prevId)) {
+                            popUpTo(Screen.AnimalDetail.route) { inclusive = true }
+                        }
+                    }
+                },
+                onNavigateNext = {
+                    val nextId = animalId + 1
+                    if (nextId <= 15) {
+                        navController.navigate(Screen.AnimalDetail.createRoute(nextId)) {
+                            popUpTo(Screen.AnimalDetail.route) { inclusive = true }
+                        }
+                    }
+                }
             )
         }
 

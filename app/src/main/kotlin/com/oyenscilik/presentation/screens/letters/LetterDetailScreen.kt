@@ -111,8 +111,41 @@ fun LetterDetailScreen(
 
             when {
                 uiState.isLoading -> {
-                    Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = AccentOrange)
+                    // Skeleton Loading
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(60.dp))
+                        // Letter circle skeleton
+                        Box(
+                            modifier = Modifier
+                                .size(180.dp)
+                                .shadow(24.dp, CircleShape)
+                                .clip(CircleShape)
+                                .background(Color.LightGray.copy(0.3f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = AccentOrange)
+                        }
+                        Spacer(modifier = Modifier.height(32.dp))
+                        // Example word skeleton
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.6f)
+                                .height(40.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color.LightGray.copy(0.3f))
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        // Description skeleton
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(Color.LightGray.copy(0.3f))
+                        )
                     }
                 }
                 uiState.error != null -> {
