@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.oyenscilik.domain.model.Letter
 import com.oyenscilik.domain.model.Result
 import com.oyenscilik.domain.repository.ContentRepository
+import com.oyenscilik.utils.TextToSpeechHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,7 @@ data class LetterDetailUiState(
 @HiltViewModel
 class LetterDetailViewModel @Inject constructor(
     private val contentRepository: ContentRepository,
+    private val ttsHelper: TextToSpeechHelper,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -35,6 +37,13 @@ class LetterDetailViewModel @Inject constructor(
             savedStateHandle.getStateFlow("letterId", "1").collect { newLetterId ->
                 val id = newLetterId.toIntOrNull() ?: 1
                 loadLetter(id)
+            }
+        }
+        
+        // Observe TTS speaking state
+        viewModelScope.launch {
+            ttsHelper.isSpeaking.collect { speaking ->
+                _uiState.value = _uiState.value.copy(isPlaying = speaking)
             }
         }
     }
@@ -63,9 +72,19 @@ class LetterDetailViewModel @Inject constructor(
     }
 
     fun toggleAudio() {
-        _uiState.value = _uiState.value.copy(
-            isPlaying = !_uiState.value.isPlaying
-        )
-        // TODO: Implement actual audio playback
+        val letter = _uiState.value.letter ?: return
+        
+        if (_uiState.value.isPlaying) {
+            ttsHelper.stop()
+        } else {
+            // Speak naturally: "Huruf A. Contohnya Apel"
+            val speech = "Huruf ${letter.letter}. Contohnya ${letter.exampleWord}"
+            ttsHelper.speak(speech)
+        }
+    }
+    
+    override fun onCleared() {
+        super.onCleared()
+        ttsHelper.stop()
     }
 }
