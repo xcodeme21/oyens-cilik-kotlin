@@ -9,19 +9,19 @@ interface ApiService {
     @GET("content/letters")
     suspend fun getLetters(): Response<ApiResponse<List<LetterDto>>>
 
-    @GET("content/letters/{id}")
+    @GET("content/letters/order/{id}")
     suspend fun getLetter(@Path("id") id: Int): Response<ApiResponse<LetterDto>>
 
     @GET("content/numbers")
     suspend fun getNumbers(): Response<ApiResponse<List<NumberDto>>>
 
-    @GET("content/numbers/{id}")
+    @GET("content/numbers/order/{id}")
     suspend fun getNumber(@Path("id") id: Int): Response<ApiResponse<NumberDto>>
 
     @GET("content/animals")
     suspend fun getAnimals(): Response<ApiResponse<List<AnimalDto>>>
 
-    @GET("content/animals/{id}")
+    @GET("content/animals/order/{id}")
     suspend fun getAnimal(@Path("id") id: Int): Response<ApiResponse<AnimalDto>>
     
     // Auth endpoints
