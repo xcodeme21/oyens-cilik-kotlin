@@ -1,28 +1,62 @@
-# Gradle
-.gradle/
-build/
-!gradle/wrapper/gradle-wrapper.jar
-
-# Android Studio
-*.iml
-.idea/
-local.properties
-
-# Signing
-*.jks
-*.keystore
-keystore.properties
-
-# APK files
+# Built application files
 *.apk
+*.ap_
 *.aab
 
-# OS
-.DS_Store
-Thumbs.db
+# Files for the ART/Dalvik VM
+*.dex
 
-# Logs
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Gradle files
+.gradle/
+build/
+*/build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
 *.log
 
-# Kotlin
-*.kotlin_module
+# Android Studio / IntelliJ IDEA
+*.iml
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.navigation/
+*.hprof
+captures/
+output.json
+
+# NDK
+obj/
+
+# Android Profiling
+*.hprof
+
+# Keystore files
+*.jks
+*.keystore
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+.cxx/
+
+# Google Services (e.g. APIs or Firebase)
+# google-services.json
+
+# Android Patch
+gen-external-apklibs
+
+# Misc
+first-build.log
