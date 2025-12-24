@@ -29,16 +29,20 @@ class LetterDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LetterDetailUiState())
     val uiState: StateFlow<LetterDetailUiState> = _uiState.asStateFlow()
 
-    private val letterId: Int = savedStateHandle.get<String>("letterId")?.toIntOrNull() ?: 0
-
     init {
-        loadLetter()
+        // Observe letterId changes from navigation
+        viewModelScope.launch {
+            savedStateHandle.getStateFlow("letterId", "1").collect { newLetterId ->
+                val id = newLetterId.toIntOrNull() ?: 1
+                loadLetter(id)
+            }
+        }
     }
 
-    private fun loadLetter() {
+    private fun loadLetter(id: Int) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            when (val result = contentRepository.getLetter(letterId)) {
+            when (val result = contentRepository.getLetter(id)) {
                 is Result.Success -> {
                     _uiState.value = _uiState.value.copy(
                         letter = result.data,
