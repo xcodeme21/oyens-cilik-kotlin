@@ -30,13 +30,17 @@ private val AccentOrange = Color(0xFFFF8C42)
 fun ProfileScreen(
     onNavigateBack: () -> Unit,
     onNavigateToStreak: () -> Unit,
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    viewModel: com.oyenscilik.presentation.viewmodel.ProfileViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
-    val userName = "Anak Pintar"
-    val level = 3
-    val levelTitle = "Mahir"
-    val totalStars = 156
-    val streak = 7
+    val uiState by viewModel.uiState.collectAsState()
+    val profile = uiState.childProfile
+    
+    val userName = profile?.name ?: "Anak Pintar"
+    val level = profile?.level ?: 1
+    val levelTitle = profile?.levelTitle ?: "Pemula"
+    val totalStars = profile?.totalStars ?: 0
+    val streak = profile?.currentStreak ?: 0
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     // Logout dialog

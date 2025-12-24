@@ -73,7 +73,7 @@ class ProfileViewModel @Inject constructor(
                     isLoading = false,
                     childProfile = ChildProfile(
                         id = "guest",
-                        name = "Tamu",
+                        name = "Anak Pintar",
                         age = 0,
                         avatarEmoji = "🐱",
                         level = 1,
