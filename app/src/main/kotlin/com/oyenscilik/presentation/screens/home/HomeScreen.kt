@@ -115,7 +115,6 @@ Text("🐱", fontSize = 32.sp)
 
             // Letters - Large featured card
             PremiumMenuCard(
-                emoji = "🔤",
                 title = "Belajar Huruf",
                 subtitle = "A sampai Z",
                 gradient = listOf(Color(0xFFFF8C42), Color(0xFFFF6B35)),
@@ -132,7 +131,6 @@ Text("🐱", fontSize = 32.sp)
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 PremiumMenuCard(
-                    emoji = "🔢",
                     title = "Angka",
                     subtitle = "0 - 20",
                     gradient = listOf(Color(0xFF667EEA), Color(0xFF764BA2)),
@@ -142,7 +140,6 @@ Text("🐱", fontSize = 32.sp)
                 )
 
                 PremiumMenuCard(
-                    emoji = "🦁",
                     title = "Hewan",
                     subtitle = "15+ Jenis",
                     gradient = listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
@@ -152,27 +149,6 @@ Text("🐱", fontSize = 32.sp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Stats section
-            Text(
-                text = "Pencapaianmu",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextDark
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                PremiumStatCard(Modifier.weight(1f), "⭐", "156", "Bintang")
-                PremiumStatCard(Modifier.weight(1f), "🔥", "7", "Hari")
-                PremiumStatCard(Modifier.weight(1f), "📚", "42", "Pelajaran")
-            }
-
             Spacer(modifier = Modifier.height(40.dp))
         }
     }
@@ -180,7 +156,6 @@ Text("🐱", fontSize = 32.sp)
 
 @Composable
 fun PremiumMenuCard(
-    emoji: String,
     title: String,
     subtitle: String,
     gradient: List<Color>,
@@ -237,7 +212,6 @@ fun PremiumMenuCard(
                 .padding(20.dp)
         ) {
             Column {
-                Text(emoji, fontSize = 36.sp)
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = title,
