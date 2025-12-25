@@ -1,10 +1,8 @@
 package com.oyenscilik.presentation.screens.animals
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,106 +15,85 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import com.oyenscilik.presentation.viewmodel.AnimalsViewModel
 
-private val Cream = Color(0xFFFFFBF5)
-private val Peach = Color(0xFFFFE5D9)
-private val TextDark = Color(0xFF2D3436)
-
-data class AnimalItem(
-    val id: Int,
-    val name: String,
-    val emoji: String
-)
+private val LightBackground = Color(0xFFF5F7FA)
+private val CardBackground = Color(0xFFFFFFFF)
+private val TextPrimary = Color(0xFF1A1F36)
+private val TextSecondary = Color(0xFF6E7787)
+private val AccentBlue = Color(0xFF4A7DFF)
 
 @Composable
 fun AnimalsScreen(
     onNavigateToAnimal: (Int) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: AnimalsViewModel = hiltViewModel()
 ) {
-    val animals = listOf(
-        AnimalItem(1, "Singa", "🦁"),
-        AnimalItem(2, "Gajah", "🐘"),
-        AnimalItem(3, "Jerapah", "🦒"),
-        AnimalItem(4, "Monyet", "🐵"),
-        AnimalItem(5, "Zebra", "🦓"),
-        AnimalItem(6, "Harimau", "🐯"),
-        AnimalItem(7, "Beruang", "🐻"),
-        AnimalItem(8, "Kucing", "🐱"),
-        AnimalItem(9, "Anjing", "🐶"),
-        AnimalItem(10, "Kelinci", "🐰"),
-        AnimalItem(11, "Burung", "🐦"),
-        AnimalItem(12, "Ikan", "🐟"),
-        AnimalItem(13, "Kura-kura", "🐢"),
-        AnimalItem(14, "Buaya", "🐊"),
-        AnimalItem(15, "Lumba-lumba", "🐬")
-    )
+    val uiState by viewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = Brush.verticalGradient(listOf(Cream, Color(0xFFFFF8F0), Peach.copy(0.2f))))
+            .background(LightBackground)
     ) {
-        // Decorative bg
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .offset(x = 180.dp, y = 300.dp)
-                .background(
-                    brush = Brush.radialGradient(listOf(Color(0xFF11998E).copy(0.15f), Color.Transparent)),
-                    shape = CircleShape
-                )
-        )
-
         Column(modifier = Modifier.fillMaxSize()) {
             // Header
             Row(
-                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .shadow(8.dp, CircleShape)
+                        .size(44.dp)
+                        .shadow(4.dp, CircleShape)
                         .clip(CircleShape)
                         .background(Color.White)
                         .clickable { onNavigateBack() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("←", fontSize = 22.sp, color = TextDark)
+                    Text("←", fontSize = 20.sp, color = TextPrimary)
                 }
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Mengenal Hewan",
-                        fontSize = 22.sp,
+                        text = "Explore Pets",
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextDark
+                        color = TextPrimary
                     )
-                    Text("${animals.size} Jenis Hewan", fontSize = 13.sp, color = Color(0xFF636E72))
+                    Text(
+                        text = "${uiState.animals.size} hewan lucu",
+                        fontSize = 14.sp,
+                        color = TextSecondary
+                    )
                 }
 
-                Text("🦁", fontSize = 32.sp)
+                Box(modifier = Modifier.size(44.dp)) // Spacer for balance
             }
 
+            // Grid
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                itemsIndexed(animals) { index, animal ->
-                    PremiumAnimalCard(
+                itemsIndexed(uiState.animals) { index, animal ->
+                    ModernAnimalCard(
                         animal = animal,
                         index = index,
-                        onClick = { onNavigateToAnimal(animal.id) }
+                        onClick = { onNavigateToAnimal(animal.order) }
                     )
                 }
             }
@@ -125,80 +102,73 @@ fun AnimalsScreen(
 }
 
 @Composable
-fun PremiumAnimalCard(
-    animal: AnimalItem,
+fun ModernAnimalCard(
+    animal: com.oyenscilik.domain.model.Animal,
     index: Int,
     onClick: () -> Unit
 ) {
     var isVisible by remember { mutableStateOf(false) }
-    var isPressed by remember { mutableStateOf(false) }
-    
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.9f else 1f,
-        animationSpec = spring(dampingRatio = 0.6f),
-        label = "scale"
-    )
 
-    val gradients = listOf(
-        listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
-        listOf(Color(0xFFFF8C42), Color(0xFFFF6B35)),
-        listOf(Color(0xFF667EEA), Color(0xFF764BA2)),
-        listOf(Color(0xFFFF6B6B), Color(0xFFFF8E53)),
-        listOf(Color(0xFF4FACFE), Color(0xFF00F2FE)),
-        listOf(Color(0xFFA770EF), Color(0xFFCF8BF3))
+    val cardColors = listOf(
+        Color(0xFFE8E4FF),
+        Color(0xFFFFE8F0),
+        Color(0xFFE0F7F4),
+        Color(0xFFFFF4E0)
     )
 
     LaunchedEffect(Unit) {
-        kotlinx.coroutines.delay((index * 35).toLong())
+        kotlinx.coroutines.delay((index * 50).toLong())
         isVisible = true
-    }
-
-    LaunchedEffect(isPressed) {
-        if (isPressed) {
-            kotlinx.coroutines.delay(100)
-            isPressed = false
-        }
     }
 
     AnimatedVisibility(
         visible = isVisible,
-        enter = scaleIn(initialScale = 0.8f) + fadeIn()
+        enter = fadeIn() + scaleIn(initialScale = 0.8f)
     ) {
         Box(
             modifier = Modifier
-                .aspectRatio(0.9f)
-                .graphicsLayer { scaleX = scale; scaleY = scale }
-                .shadow(12.dp, RoundedCornerShape(20.dp), ambientColor = gradients[index % gradients.size][0].copy(0.2f))
-                .clip(RoundedCornerShape(20.dp))
-                .background(brush = Brush.linearGradient(gradients[index % gradients.size]))
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    isPressed = true
-                    onClick()
-                }
-                .padding(12.dp),
+                .fillMaxWidth()
+                .aspectRatio(0.85f)
+                .shadow(8.dp, RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(24.dp))
+                .background(cardColors[index % cardColors.size])
+                .clickable(onClick = onClick)
+                .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                // Image container
                 Box(
                     modifier = Modifier
-                        .size(56.dp)
-                        .background(Color.White.copy(0.25f), CircleShape),
-                    contentAlignment = Alignment.Center
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
                 ) {
-                    Text(animal.emoji, fontSize = 32.sp)
+                    AsyncImage(
+                        model = animal.imageUrl,
+                        contentDescription = animal.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+
+                // Name
                 Text(
                     text = animal.name,
-                    fontSize = 13.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = TextPrimary,
+                    textAlign = TextAlign.Center
+                )
+
+                // Info
+                Text(
+                    text = animal.nameEn,
+                    fontSize = 12.sp,
+                    color = TextSecondary,
                     textAlign = TextAlign.Center
                 )
             }

@@ -32,7 +32,7 @@ fun AnimalDto.toDomain() = Animal(
     funFact = funFact,
     imageUrl = imageUrl,
     audioUrl = audioUrl,
-    difficulty = difficulty
+    order = order
 )
 
 // Auth Mappers

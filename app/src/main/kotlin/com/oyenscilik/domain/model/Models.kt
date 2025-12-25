@@ -28,7 +28,7 @@ data class Animal(
     val funFact: String,
     val imageUrl: String?,
     val audioUrl: String?,
-    val difficulty: String
+    val order: Int
 )
 
 // Auth Models
