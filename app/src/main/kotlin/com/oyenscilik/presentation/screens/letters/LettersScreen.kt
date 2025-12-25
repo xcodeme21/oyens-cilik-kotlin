@@ -109,7 +109,7 @@ fun LettersScreen(
                             PremiumLetterCard(
                                 letter = letter,
                                 index = index,
-                                onClick = { onNavigateToLetter(letter.id) }
+                                onClick = { onNavigateToLetter(letter.order) }
                             )
                         }
                     }
